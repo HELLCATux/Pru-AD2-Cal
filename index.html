@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>@PRUTHVIRAJ@</title>
+<style>
+body{font-family:Segoe UI, Tahoma, Arial, sans-serif;font-size:13px;background:#f4f7fb;margin:0;}
+
+/* container look like application form */
+.container-card{
+  background:#fff;
+  border:1px solid #c9b458;
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+}
+
+table{width:100%;table-layout:fixed;margin:20px 0 0 0;border-collapse:collapse;background:#fff;}
+th,td{border:1px solid #c9b458;padding:3px;font-size:12px;}
+th{background:#fff7cc;color:#004a99;font-size:14px;text-align:left;padding:5px;}
+
+.blue{background:#d9edf7;font-weight:bold;}
+.green{background:#dff0d8;font-weight:bold;}
+#totalValue{font-weight:bold;}
+#finalAmount{font-weight:bold;}
+.yellow{background:#fff2b2;font-weight:bold;}
+.center{text-align:center;}
+
+input,select,textarea{width:100%;box-sizing:border-box;padding:3px 5px;height:22px;border:1px solid #cfcfcf;border-radius:3px;font-size:12.5px;background:#fff;}
+
+input[type="number"]{
+  font-size:13.5px;
+  font-weight:500;
+}
+
+input[readonly]{background:#f2f2f2;}
+
+input[type="checkbox"]{
+  width:17px;
+  height:17px;
+  min-width:17px;
+  min-height:17px;
+}
+
+.total{background:#f7f7f7;font-weight:bold;}
+.tcs-options{display:flex;flex-direction:column}
+.tcs-line{display:inline-flex;align-items:center;justify-content:space-between;white-space:nowrap}
+.tcs-line input{margin-left:12px}
+
+/* Ultra-Compact (Bank-grade / Finacle-like) UI override */
+body{font-size:11px;}
+table{margin:7px 0 0 0;}
+th{font-size:13px;padding:4px;}
+td{padding:3px;}
+input,select,textarea{
+  height:22px;
+  padding:2px 5px;
+  font-size:11px;
+  border-radius:2px;
+}
+input[type="checkbox"]{
+  width:17px;
+  height:17px;
+  min-width:17px;
+  min-height:17px;
+}
+.tcs-line{line-height:1.2;}
+</style>
+</head>
+<body>
+<div style="display:flex;flex-wrap:nowrap;width:100vw;min-height:100vh;align-items:stretch;overflow-x:hidden;">
+  <div style="width:40vw;max-width:40vw;min-width:40vw;padding:0 0 0 20px;box-sizing:border-box;position:relative;z-index:2;overflow-y:auto;">
+<table>
+<tr><th colspan="5">@PRUTHVIRAJ@</th></tr>
+
+<tr>
+<td colspan="5">
+<div style="display:flex;gap:10px;">
+<div style="border:1px solid #000;padding:1px 5px;min-width:101px;">
+<div style="display:flex;align-items:center;"><span style="width:70px;">Selling:</span><input type="checkbox" class="tradeType"></div>
+<div style="display:flex;align-items:center;"><span style="width:70px;">Buying:</span><input type="checkbox" class="tradeType"></div>
+</div>
+<div style="border:1px solid #000;padding:1px 5px;min-width:101px;">
+<div style="display:flex;align-items:center;"><span style="width:110px;">Education:</span><input type="checkbox" id="eduPurpose" class="purposeType"></div>
+<div style="display:flex;align-items:center;"><span style="width:110px;">Private Visit:</span><input type="checkbox" id="privatePurpose" class="purposeType"></div>
+</div>
+<div style="border:1px solid #000;padding:1px 5px;min-width:101px;">
+<div style="display:flex;align-items:center;"><span style="width:120px;"><div class="tcs-options">
+  <label class="tcs-line">Direct TCS 5% <input type="checkbox" id="tcs5"></label>
+  <label class="tcs-line">Direct TCS 20% <input type="checkbox" id="tcs20"></label>
+</div>
+</div>
+</div>
+</td>
+</tr>
+
+<tr class="blue"><td>FC Name</td><td class="center">Product</td><td class="center">Amount</td><td class="center">Rate</td><td class="center">INR Value</td></tr>
+
+<tr class="fc-row">
+<td><input class="fc-name" maxlength="3" value="USD" oninput="this.value=this.value.toUpperCase()"></td>
+<td><input class="product" maxlength="3" value="TT" oninput="this.value=this.value.toUpperCase()"></td>
+<td><input class="fc-amount" value="0"></td>
+<td><input class="rate" value="1"></td>
+<td><input class="fc-inr" readonly></td>
+</tr>
+<tr class="fc-row">
+<td><input class="fc-name" maxlength="3" value="" oninput="this.value=this.value.toUpperCase()"></td>
+<td><input class="product" maxlength="3" value="" oninput="this.value=this.value.toUpperCase()"></td>
+<td><input class="fc-amount" value=""></td>
+<td><input class="rate" value=""></td>
+<td><input class="fc-inr" readonly></td>
+</tr>
+<tr class="fc-row">
+<td><input class="fc-name" maxlength="3" value="" oninput="this.value=this.value.toUpperCase()"></td>
+<td><input class="product" maxlength="3" value="" oninput="this.value=this.value.toUpperCase()"></td>
+<td><input class="fc-amount" value=""></td>
+<td><input class="rate" value=""></td>
+<td><input class="fc-inr" readonly></td>
+</tr>
+
+<tr><td colspan="4"><b>Total INR Before Tax</b></td><td><input id="totalInr" readonly></td></tr>
+<tr><td colspan="4">GST Applicable on FCY – Calculated on INR Value</td><td><input id="bankCharges" readonly></td></tr>
+<tr><td colspan="4">Nostro Charges + Other Charges</td><td><input id="gstFcy" value="0"></td></tr>
+<tr><td colspan="4">GST on Nostro Charges + Other Charges (18%)</td><td><input id="nostro" readonly></td></tr>
+<tr class="green"><td colspan="4" id="totalLabel">Total INR amount including applicable taxes and charges</td><td><input id="totalValue" readonly></td></tr>
+<tr><td colspan="4">Previously Declared INR Amount(CIMS)</td><td><input id="cims" value="0"></td></tr>
+<tr><td colspan="4">Education Loan (-less)</td><td><input id="eduLoan" value="0"></td></tr>
+<tr class="total"><td colspan="4">(CIMS-Education Loan)</td><td><input id="diff" readonly></td></tr>
+<tr><td colspan="4">TCS applicable</td><td><input id="tcs" readonly></td></tr>
+<tr class="yellow"><td colspan="4">Total INR Receivable from Customer After Tax (GST+TCS)</td><td><input id="finalAmount" readonly></td></tr>
+</table>
+</div>
+<div style="width:60vw;max-width:60vw;padding:20px;box-sizing:border-box;position:relative;z-index:1;overflow-y:auto;">
+  <div id="tcsMailBox" style="display:none;border:1px solid #c9b458;background:#fff;padding:16px;font-size:13px;line-height:1.7;max-width:100%;word-break:break-word;white-space:normal;overflow:visible;">
+    <p>Dear Customer,</p>
+    <p>We would like to inform you that your <b>TCS exemption limit under the Liberalised Remittance Scheme (LRS) for the Financial Year 2025–2026 has been exceeded</b>.</p>
+    <p>Accordingly, <b>Tax Collected at Source (TCS)</b> is applicable on your current remittance transaction. To proceed further, we request you to <b>pay the applicable TCS amount</b> as mentioned below.</p>
+    <p><b>Details are as follows:</b></p>
+    <ul>
+      <li><b>Total LRS utilized in the current financial year (INR):</b> <span id="mailCims"></span></li>
+      <li><b>TCS payable for the present transaction (INR):</b> <span id="mailTcs"></span></li>
+    </ul>
+    <p>Kindly remit the above-mentioned TCS amount to the same bank account and share the <b>UTR number / transaction reference number</b> with us to enable identification and processing.</p>
+    <p>Please feel free to contact us in case of any clarification.</p>
+    <p>Thank you for your cooperation.</p>
+    <div style="margin-top:14px;text-align:center;">
+      <button type="button" id="copyMailBtn" style="padding:6px 18px;font-size:12px;border:1px solid #c9b458;background:#fff7cc;border-radius:3px;cursor:pointer;">Copy Email</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function formatINR(n){n=Number(n)||0;var d=n%1!==0;return n.toLocaleString('en-IN',{minimumFractionDigits:d?2:0,maximumFractionDigits:d?2:0});}
+function parseNum(v){return Number(String(v).replace(/,/g,''))||0;}
+
+var trade=document.querySelectorAll('.tradeType');
+var purpose=document.querySelectorAll('.purposeType');
+var directTcs=document.querySelectorAll('#tcs5,#tcs20');
+
+directTcs.forEach(cb=>cb.addEventListener('change',()=>{
+  if(cb.checked){
+    directTcs.forEach(o=>{if(o!==cb)o.checked=false;});
+    purpose.forEach(p=>p.checked=false);
+  }
+  calc();
+}));
+
+function calc(){
+  var A=0;
+  document.querySelectorAll('.fc-row').forEach(function(r){
+    var amt=parseNum(r.querySelector('.fc-amount').value);
+    var rate=parseNum(r.querySelector('.rate').value);
+    var inr=amt*rate;
+    r.querySelector('.fc-inr').value=formatINR(inr);
+    A+=inr;
+  });
+  totalInr.value=formatINR(A);
+
+  var B=0;
+  if(A>100000){
+    if(A>1000000){B=Math.min(7000,(A-1000000)*0.00018+990);}else{B=(A-100000)*0.0009+180;}
+  }else{B=Math.max(A*0.0018,45);} 
+  B=Math.round(B*100)/100;
+
+  var C=parseNum(gstFcy.value);
+  var D=C*0.18;
+
+  if(trade[1].checked){
+    var baseBuy=A+C+D;
+    if(baseBuy>100000){
+      if(baseBuy>1000000){B=Math.min(7000,(baseBuy-1000000)*0.00018+990);}else{B=(baseBuy-100000)*0.0009+180;}
+    }else{B=Math.max(baseBuy*0.0018,45);} 
+    B=Math.round(B*100)/100;
+  }
+
+  bankCharges.value=formatINR(B);
+  nostro.value=formatINR(D);
+
+  var total=trade[1].checked?(A-B+C+D):(A+B+C+D);
+  totalValue.value=formatINR(total);
+
+  var diffVal=parseNum(cims.value)-parseNum(eduLoan.value);
+  diff.value=formatINR(diffVal);
+
+  var tcsBase=A+B+diffVal;
+  var tcsVal=0;
+
+  if(document.getElementById('tcs5').checked){
+    tcsVal=(A+B)*0.05;
+  }
+  else if(document.getElementById('tcs20').checked){
+    tcsVal=(A+B)*0.20;
+  }
+  else{
+    if(eduPurpose.checked){
+      if(tcsBase>1000000){
+        tcsVal=(tcsBase-1000000)*0.05;
+      }
+    }
+    else if(privatePurpose.checked){
+      if(tcsBase<=1000000){
+        tcsVal=tcsBase*0.05;
+      }else{
+        tcsVal=1000000*0.05+(tcsBase-1000000)*0.20;
+      }
+    }
+  }
+
+  tcs.value=formatINR(tcsVal);
+  finalAmount.value=formatINR(total+tcsVal);
+
+  updateTcsMail();
+}
+
+// listeners
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));
+
+trade.forEach((cb,i)=>cb.addEventListener('change',()=>{
+  if(cb.checked)trade.forEach(o=>{if(o!==cb)o.checked=false;});
+  var buying=trade[1].checked;
+  document.getElementById('totalLabel').innerText = buying
+    ? 'Total INR Amount Payable to the Customer After Tax'
+    : (trade[0].checked
+        ? 'Total INR Receivable from Customer After Tax'
+        : 'Total INR amount including applicable taxes and charges');
+  purpose.forEach(p=>{p.disabled=buying;if(buying)p.checked=false;});
+  directTcs.forEach(d=>{d.disabled=buying;if(buying)d.checked=false;});
+  calc();
+}));
+
+purpose.forEach(cb=>cb.addEventListener('change',()=>{
+  if(cb.checked){
+    purpose.forEach(o=>{if(o!==cb)o.checked=false;});
+    directTcs.forEach(d=>d.checked=false);
+  }
+  updateTcsMail();
+  calc();
+}));
+
+function updateTcsMail(){
+  var box=document.getElementById('tcsMailBox');
+  var tcs5=document.getElementById('tcs5').checked;
+  var tcs20=document.getElementById('tcs20').checked;
+  if(tcs5||tcs20){
+    box.style.display='block';
+    document.getElementById('mailCims').innerText = formatINR(parseNum(cims.value)) || '0';
+    document.getElementById('mailTcs').innerText = tcs.value || '0';
+  }else{
+    box.style.display='none';
+  }
+}
+
+document.getElementById('tcs5').addEventListener('change',updateTcsMail);
+document.getElementById('tcs20').addEventListener('change',updateTcsMail);
+
+// ===== COPY EMAIL BUTTON FIX =====
+document.getElementById('copyMailBtn')?.addEventListener('click', function(){
+  var box = document.getElementById('tcsMailBox');
+  var text = box.innerText || box.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    this.innerText = 'Copied';
+    setTimeout(() => this.innerText = 'Copy Email', 1500);
+  });
+});
+
+updateTcsMail();
+calc();
+</script>
+<script>
+(function enableEnterNavigation(){
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter') return;
+
+    const el = e.target;
+    if(!el.matches('input, select, textarea')) return;
+
+    e.preventDefault();
+
+    const focusables = Array.from(
+      document.querySelectorAll('input, select, textarea')
+    ).filter(x =>
+      !x.disabled &&
+      !x.readOnly &&
+      x.offsetParent !== null
+    );
+
+    const index = focusables.indexOf(el);
+    if(index > -1 && index < focusables.length - 1){
+      focusables[index + 1].focus();
+      focusables[index + 1].select?.();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
