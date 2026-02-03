@@ -1,0 +1,1623 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deal Comparison Tool</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+
+    
+    .paste-area {
+      min-height: 50px;
+      transition: all 0.3s ease;
+    }
+    
+    .paste-area:focus {
+      outline: none;
+    }
+    
+    .paste-area.drag-over {
+      transform: scale(1.01);
+    }
+    
+    .data-table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 4px 8px;
+      text-align: left;
+      border-bottom: 1px solid;
+      word-wrap: break-word;
+      max-width: 200px;
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.4s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .pulse-icon {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app-container" class="h-full overflow-auto p-4">
+   <div class="max-w-7xl mx-auto"><!-- Header -->
+    <header class="text-center mb-4">
+     <h1 id="page-title" class="text-xl font-bold"></h1>
+    </header><!-- Section 1: INDUSTT Comparison -->
+    <div class="mb-4">
+     <h2 class="text-lg font-bold mb-3 text-center" id="section1-title" style="color: #f1f5f9;">INDUSTT Comparison</h2>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-3"><!-- Eon Deal INDUSTT -->
+      <div class="rounded-xl p-3 shadow-lg overflow-hidden" id="eon-industt-card">
+       <div class="flex items-center gap-2 mb-2">
+        <div class="w-7 h-7 rounded-lg flex items-center justify-center" id="eon-industt-icon-bg">
+         <svg class="w-4 h-4" id="eon-industt-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+         </svg>
+        </div>
+        <h2 id="eon-industt-title" class="text-base font-semibold">Eon Deal INDUSTT</h2>
+       </div>
+       <div id="eon-industt-paste-area" class="paste-area rounded-lg border-2 border-dashed p-3 cursor-pointer flex flex-col items-center justify-center overflow-hidden" contenteditable="true" tabindex="0">
+        <div id="eon-industt-placeholder" class="text-center pointer-events-none">
+         <svg class="w-6 h-6 mx-auto mb-1 opacity-50 pulse-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+         </svg>
+         <p class="text-xs font-medium mb-0.5">Paste Data</p>
+         <p class="text-xs opacity-60">Ctrl+V</p>
+        </div>
+       </div><!-- Summary Table for INDUSTT -->
+       <div id="eon-industt-summary-container" class="mt-2 hidden fade-in">
+        <h3 class="text-xs font-semibold mb-1" id="eon-summary-title-industt">Summary by FE Name - INDUSTT</h3>
+        <div class="overflow-x-auto rounded-lg" id="eon-summary-table-industt" style="width: 100%;"></div>
+       </div>
+       <div class="flex items-center justify-between mt-2"><span id="eon-industt-row-count" class="text-xs opacity-70">No data</span> <button id="eon-industt-clear-btn" class="text-xs font-medium px-2 py-0.5 rounded transition-colors hidden"> Clear </button>
+       </div>
+      </div><!-- Indus Deal Section -->
+      <div class="rounded-xl p-3 shadow-lg overflow-hidden" id="indus-card">
+       <div class="flex items-center gap-2 mb-2">
+        <div class="w-7 h-7 rounded-lg flex items-center justify-center" id="indus-icon-bg">
+         <svg class="w-4 h-4" id="indus-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+         </svg>
+        </div>
+        <h2 id="indus-title" class="text-base font-semibold">Indus Bank Deal</h2>
+       </div>
+       <div id="indus-paste-area" class="paste-area rounded-lg border-2 border-dashed p-3 cursor-pointer flex flex-col items-center justify-center overflow-hidden" contenteditable="true" tabindex="0">
+        <div id="indus-placeholder" class="text-center pointer-events-none">
+         <svg class="w-6 h-6 mx-auto mb-1 opacity-50 pulse-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+         </svg>
+         <p class="text-xs font-medium mb-0.5">Paste Data</p>
+         <p class="text-xs opacity-60">Ctrl+V</p>
+        </div>
+       </div>
+       <div id="indus-table-container" class="mt-2 overflow-x-auto rounded-lg hidden fade-in" style="width: 100%;"></div><!-- Summary Table for Indus -->
+       <div id="indus-summary-container" class="mt-2 hidden fade-in">
+        <h3 class="text-xs font-semibold mb-1" id="indus-summary-title">Summary by Dealt CCY</h3>
+        <div class="overflow-x-auto rounded-lg" id="indus-summary-table" style="width: 100%;"></div>
+       </div>
+       <div class="flex items-center justify-between mt-2"><span id="indus-row-count" class="text-xs opacity-70">No data</span> <button id="indus-clear-btn" class="text-xs font-medium px-2 py-0.5 rounded transition-colors hidden"> Clear </button>
+       </div>
+      </div><!-- Purpose Count Section for INDUSTT -->
+      <div class="rounded-xl p-3 shadow-lg overflow-hidden" id="purpose-card">
+       <div class="flex items-center gap-2 mb-2">
+        <div class="w-7 h-7 rounded-lg flex items-center justify-center" id="purpose-icon-bg">
+         <svg class="w-4 h-4" id="purpose-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+         </svg>
+        </div>
+        <h2 id="purpose-title" class="text-base font-semibold">INDUSTT Purpose Count</h2>
+       </div><!-- Purpose Count Table -->
+       <div id="purpose-summary-container" class="mt-2 hidden fade-in">
+        <h3 class="text-xs font-semibold mb-1" id="purpose-summary-title">Count by Purpose (INDUSTT)</h3>
+        <div class="overflow-x-auto rounded-lg" id="purpose-summary-table" style="width: 100%;"></div>
+       </div>
+       <div class="flex items-center justify-between mt-2"><span id="purpose-row-count" class="text-xs opacity-70">No data loaded</span>
+       </div>
+      </div>
+     </div>
+    </div><!-- Section 2: IDFC Comparison -->
+    <div class="mb-4">
+     <h2 class="text-lg font-bold mb-3 text-center" id="section2-title" style="color: #f1f5f9;">IDFC Comparison</h2>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-3"><!-- Eon Deal IDFC -->
+      <div class="rounded-xl p-3 shadow-lg overflow-hidden" id="eon-idfc-card">
+       <div class="flex items-center gap-2 mb-2">
+        <div class="w-7 h-7 rounded-lg flex items-center justify-center" id="eon-idfc-icon-bg">
+         <svg class="w-4 h-4" id="eon-idfc-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+         </svg>
+        </div>
+        <h2 id="eon-idfc-title" class="text-base font-semibold">Eon Deal IDFCTT</h2>
+       </div>
+       <div id="eon-idfc-paste-area" class="paste-area rounded-lg border-2 border-dashed p-3 cursor-pointer flex flex-col items-center justify-center overflow-hidden" contenteditable="true" tabindex="0">
+        <div id="eon-idfc-placeholder" class="text-center pointer-events-none">
+         <svg class="w-6 h-6 mx-auto mb-1 opacity-50 pulse-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+         </svg>
+         <p class="text-xs font-medium mb-0.5">Paste Data</p>
+         <p class="text-xs opacity-60">Ctrl+V</p>
+        </div>
+       </div><!-- Summary Table for IDFCTT -->
+       <div id="eon-idfc-summary-container" class="mt-2 hidden fade-in">
+        <h3 class="text-xs font-semibold mb-1" id="eon-summary-title-idfctt">Summary by FE Name - IDFCTT</h3>
+        <div class="overflow-x-auto rounded-lg" id="eon-summary-table-idfctt" style="width: 100%;"></div>
+       </div>
+       <div class="flex items-center justify-between mt-2"><span id="eon-idfc-row-count" class="text-xs opacity-70">No data</span> <button id="eon-idfc-clear-btn" class="text-xs font-medium px-2 py-0.5 rounded transition-colors hidden"> Clear </button>
+       </div>
+      </div><!-- IDFC Deal Section -->
+      <div class="rounded-xl p-3 shadow-lg overflow-hidden" id="idfc-card">
+       <div class="flex items-center gap-2 mb-2">
+        <div class="w-7 h-7 rounded-lg flex items-center justify-center" id="idfc-icon-bg">
+         <svg class="w-4 h-4" id="idfc-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+         </svg>
+        </div>
+        <h2 id="idfc-title" class="text-base font-semibold">IDFC Bank Deal</h2>
+       </div>
+       <div id="idfc-paste-area" class="paste-area rounded-lg border-2 border-dashed p-3 cursor-pointer flex flex-col items-center justify-center overflow-hidden" contenteditable="true" tabindex="0">
+        <div id="idfc-placeholder" class="text-center pointer-events-none">
+         <svg class="w-6 h-6 mx-auto mb-1 opacity-50 pulse-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+         </svg>
+         <p class="text-xs font-medium mb-0.5">Paste Data</p>
+         <p class="text-xs opacity-60">Ctrl+V</p>
+        </div>
+       </div><!-- Summary Table for IDFC -->
+       <div id="idfc-summary-container" class="mt-2 hidden fade-in">
+        <h3 class="text-xs font-semibold mb-1" id="idfc-summary-title">Summary by CCY Pair</h3>
+        <div class="overflow-x-auto rounded-lg" id="idfc-summary-table" style="width: 100%;"></div>
+       </div>
+       <div class="flex items-center justify-between mt-2"><span id="idfc-row-count" class="text-xs opacity-70">No data</span> <button id="idfc-clear-btn" class="text-xs font-medium px-2 py-0.5 rounded transition-colors hidden"> Clear </button>
+       </div>
+      </div><!-- Purpose Count Section for IDFCTT -->
+      <div class="rounded-xl p-3 shadow-lg overflow-hidden" id="purpose-idfc-card">
+       <div class="flex items-center gap-2 mb-2">
+        <div class="w-7 h-7 rounded-lg flex items-center justify-center" id="purpose-idfc-icon-bg">
+         <svg class="w-4 h-4" id="purpose-idfc-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+         </svg>
+        </div>
+        <h2 id="purpose-idfc-title" class="text-base font-semibold">IDFCTT Purpose Count</h2>
+       </div><!-- Purpose Count Table for IDFCTT -->
+       <div id="purpose-idfc-summary-container" class="mt-2 hidden fade-in">
+        <h3 class="text-xs font-semibold mb-1" id="purpose-idfc-summary-title">Count by Purpose (IDFCTT)</h3>
+        <div class="overflow-x-auto rounded-lg" id="purpose-idfc-summary-table" style="width: 100%;"></div>
+       </div>
+       <div class="flex items-center justify-between mt-2"><span id="purpose-idfc-row-count" class="text-xs opacity-70">No data loaded</span>
+       </div>
+      </div>
+     </div>
+    </div><!-- Instructions -->
+    <div class="rounded-lg p-3 text-center" id="instructions-box">
+     <p class="text-xs opacity-80">📋 Copy from Excel (Ctrl+C), click paste area, and paste (Ctrl+V)</p>
+    </div><!-- Excel File Upload Section -->
+    <div class="mt-4 rounded-lg p-3 text-center" id="excel-upload-section">
+     <h3 class="text-sm font-semibold mb-2" id="excel-upload-title">Or Upload Excel File</h3>
+     <div class="flex flex-col items-center gap-2"><label for="excel-file-input" class="cursor-pointer">
+       <div id="excel-upload-area" class="rounded-lg border-2 border-dashed p-3 flex items-center justify-center gap-2 transition-all hover:scale-102">
+        <svg class="w-5 h-5 opacity-60" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <p class="text-xs font-medium">Click to Upload Excel (EON, Indus, IDFC sheets)</p>
+       </div></label> <input type="file" id="excel-file-input" accept=".xlsx,.xls" class="hidden">
+      <div id="excel-upload-status" class="text-xs opacity-70 hidden"></div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      page_title: '@Pruthvi@ Deal Comparison Tool',
+      eon_section_title: 'Eon Deal',
+      indus_section_title: 'Indus Bank Deal',
+      idfc_section_title: 'IDFC Bank Deal',
+      background_color: '#f8fafc',
+      surface_color: '#ffffff',
+      text_color: '#1e293b',
+      primary_action_color: '#3b82f6',
+      secondary_action_color: '#64748b',
+      font_family: 'Space Grotesk',
+      font_size: 14
+    };
+
+    let config = { ...defaultConfig };
+
+    // Parse Excel/TSV data
+    function parseExcelData(text) {
+      const rows = text.trim().split(/\r?\n/);
+      if (rows.length === 0) return null;
+      
+      return rows.map(row => {
+        // Handle tab-separated values (Excel default)
+        return row.split('\t').map(cell => cell.trim());
+      });
+    }
+
+    // Create table from parsed data
+    function createTable(data, type) {
+      if (!data || data.length === 0) return '';
+      
+      const headerBg = type === 'eon' ? config.primary_action_color : config.secondary_action_color;
+      
+      let html = `<table class="data-table" style="color: ${config.text_color}">`;
+      
+      // First row as header
+      html += '<thead><tr>';
+      data[0].forEach(cell => {
+        html += `<th style="background-color: ${headerBg}; color: white; font-weight: 600;">${escapeHtml(cell)}</th>`;
+      });
+      html += '</tr></thead>';
+      
+      // Rest as body
+      if (data.length > 1) {
+        html += '<tbody>';
+        for (let i = 1; i < data.length; i++) {
+          const rowBg = i % 2 === 0 ? config.surface_color : adjustColor(config.surface_color, 10);
+          html += `<tr style="background-color: ${rowBg}">`;
+          data[i].forEach(cell => {
+            html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${escapeHtml(cell)}</td>`;
+          });
+          html += '</tr>';
+        }
+        html += '</tbody>';
+      }
+      
+      html += '</table>';
+      return html;
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Adjust color brightness
+    function adjustColor(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.min(255, Math.max(0, (num >> 16) + amt));
+      const G = Math.min(255, Math.max(0, (num >> 8 & 0x00FF) + amt));
+      const B = Math.min(255, Math.max(0, (num & 0x0000FF) + amt));
+      return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+
+    // Store INDUSTT and IDFCTT summary data globally for reconciliation
+    let industtSummaryData = {};
+    let idfcttSummaryData = {};
+    
+    // Create purpose count table from Eon Deal INDUSTT data
+    function createPurposeCountTable(data) {
+      if (!data || data.length <= 1) return '';
+      
+      // Find PURPOSE and ISSUER CODE columns
+      const headers = data[0].map(h => h.toUpperCase().trim());
+      const purposeIndex = headers.findIndex(h => h.includes('PURPOSE'));
+      const issuerCodeIndex = headers.findIndex(h => h.includes('ISSUER') && h.includes('CODE'));
+      
+      if (purposeIndex === -1 || issuerCodeIndex === -1) {
+        return '<p class="text-xs opacity-70 p-2">PURPOSE or ISSUER CODE column not found</p>';
+      }
+      
+      // Count by PURPOSE for INDUSTT only
+      const purposeCount = {};
+      let totalCount = 0;
+      
+      for (let i = 1; i < data.length; i++) {
+        let purpose = data[i][purposeIndex] || 'Unknown';
+        const issuerCode = (data[i][issuerCodeIndex] || '').toUpperCase().trim();
+        
+        // Normalize purposes
+        const purposeUpper = purpose.toUpperCase().trim();
+        if (purposeUpper === 'EDUCATION-WITH LOAN' || purposeUpper === 'EDUCATION') {
+          purpose = 'EDUCATION';
+        } else if (purposeUpper === 'REMTOUROPS-T') {
+          purpose = 'TOURS';
+        } else if (purposeUpper === 'REMTOUROPS-M') {
+          purpose = 'MICE';
+        }
+        
+        // Only count INDUSTT records
+        if (issuerCode === 'INDUSTT') {
+          if (!purposeCount[purpose]) {
+            purposeCount[purpose] = 0;
+          }
+          purposeCount[purpose]++;
+          totalCount++;
+        }
+      }
+      
+      // Sort by count descending
+      const sortedPurposes = Object.entries(purposeCount).sort((a, b) => b[1] - a[1]);
+      
+      // Create count table
+      let html = `<table class="data-table" style="color: ${config.text_color}; font-size: 0.875rem;">`;
+      html += `<thead><tr>`;
+      html += `<th style="background-color: ${config.secondary_action_color}; color: white; font-weight: 600;">Purpose</th>`;
+      html += `<th style="background-color: ${config.secondary_action_color}; color: white; font-weight: 600;">Count</th>`;
+      html += `</tr></thead><tbody>`;
+      
+      let rowIndex = 0;
+      for (const [purpose, count] of sortedPurposes) {
+        const rowBg = rowIndex % 2 === 0 ? config.surface_color : adjustColor(config.surface_color, 10);
+        html += `<tr style="background-color: ${rowBg}">`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${escapeHtml(purpose)}</td>`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${count}</td>`;
+        html += `</tr>`;
+        rowIndex++;
+      }
+      
+      if (sortedPurposes.length === 0) {
+        html += `<tr><td colspan="2" style="text-align: center; padding: 10px; opacity: 0.7;">No INDUSTT data found</td></tr>`;
+      } else {
+        // Add total row
+        html += `<tr style="background-color: ${config.secondary_action_color}; font-weight: 700;">`;
+        html += `<td style="color: white; border-color: ${config.secondary_action_color};">TOTAL</td>`;
+        html += `<td style="color: white; border-color: ${config.secondary_action_color};">${totalCount}</td>`;
+        html += `</tr>`;
+      }
+      
+      html += '</tbody></table>';
+      return { html, totalCount };
+    }
+
+    // Create purpose count table from Eon Deal IDFC data (IDFCTT)
+    function createPurposeCountTableIdfc(data) {
+      if (!data || data.length <= 1) return { html: '', totalCount: 0 };
+      
+      // Find PURPOSE and ISSUER CODE columns
+      const headers = data[0].map(h => h.toUpperCase().trim());
+      const purposeIndex = headers.findIndex(h => h.includes('PURPOSE'));
+      const issuerCodeIndex = headers.findIndex(h => h.includes('ISSUER') && h.includes('CODE'));
+      
+      if (purposeIndex === -1 || issuerCodeIndex === -1) {
+        return { html: '<p class="text-xs opacity-70 p-2">PURPOSE or ISSUER CODE column not found</p>', totalCount: 0 };
+      }
+      
+      // Count by PURPOSE for IDFCTT only
+      const purposeCount = {};
+      let totalCount = 0;
+      
+      for (let i = 1; i < data.length; i++) {
+        let purpose = data[i][purposeIndex] || 'Unknown';
+        const issuerCode = (data[i][issuerCodeIndex] || '').toUpperCase().trim();
+        
+        // Normalize purposes
+        const purposeUpper = purpose.toUpperCase().trim();
+        if (purposeUpper === 'EDUCATION-WITH LOAN' || purposeUpper === 'EDUCATION') {
+          purpose = 'EDUCATION';
+        } else if (purposeUpper === 'REMTOUROPS-T') {
+          purpose = 'TOURS';
+        } else if (purposeUpper === 'REMTOUROPS-M') {
+          purpose = 'MICE';
+        }
+        
+        // Only count IDFCTT records
+        if (issuerCode === 'IDFCTT') {
+          if (!purposeCount[purpose]) {
+            purposeCount[purpose] = 0;
+          }
+          purposeCount[purpose]++;
+          totalCount++;
+        }
+      }
+      
+      // Sort by count descending
+      const sortedPurposes = Object.entries(purposeCount).sort((a, b) => b[1] - a[1]);
+      
+      // Create count table
+      let html = `<table class="data-table" style="color: ${config.text_color}; font-size: 0.875rem;">`;
+      html += `<thead><tr>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">Purpose</th>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">Count</th>`;
+      html += `</tr></thead><tbody>`;
+      
+      let rowIndex = 0;
+      for (const [purpose, count] of sortedPurposes) {
+        const rowBg = rowIndex % 2 === 0 ? config.surface_color : adjustColor(config.surface_color, 10);
+        html += `<tr style="background-color: ${rowBg}">`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${escapeHtml(purpose)}</td>`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${count}</td>`;
+        html += `</tr>`;
+        rowIndex++;
+      }
+      
+      if (sortedPurposes.length === 0) {
+        html += `<tr><td colspan="2" style="text-align: center; padding: 10px; opacity: 0.7;">No IDFCTT data found</td></tr>`;
+      } else {
+        // Add total row
+        html += `<tr style="background-color: ${config.primary_action_color}; font-weight: 700;">`;
+        html += `<td style="color: white; border-color: ${config.primary_action_color};">TOTAL</td>`;
+        html += `<td style="color: white; border-color: ${config.primary_action_color};">${totalCount}</td>`;
+        html += `</tr>`;
+      }
+      
+      html += '</tbody></table>';
+      return { html, totalCount };
+    }
+
+    // Create summary table by FE Name and Amount (for Eon)
+    function createSummaryTable(data) {
+      if (!data || data.length <= 1) return { industt: '', idfctt: '' };
+      
+      // Find FE NAME, FE AMOUNT, and ISSUER CODE columns
+      const headers = data[0].map(h => h.toUpperCase().trim());
+      const feNameIndex = headers.findIndex(h => h.includes('FE') && h.includes('NAME'));
+      const feAmountIndex = headers.findIndex(h => h.includes('FE') && h.includes('AMOUNT'));
+      const issuerCodeIndex = headers.findIndex(h => h.includes('ISSUER') && h.includes('CODE'));
+      
+      if (feNameIndex === -1 || feAmountIndex === -1 || issuerCodeIndex === -1) {
+        const errorMsg = '<p class="text-xs opacity-70 p-2">FE NAME, FE AMOUNT, or ISSUER CODE column not found</p>';
+        return { industt: errorMsg, idfctt: errorMsg };
+      }
+      
+      // Calculate sum by FE Name for each issuer code
+      const summaryIndustt = {};
+      const summaryIdfctt = {};
+      
+      for (let i = 1; i < data.length; i++) {
+        const feName = data[i][feNameIndex] || 'Unknown';
+        const feAmount = parseFloat(data[i][feAmountIndex]) || 0;
+        const issuerCode = (data[i][issuerCodeIndex] || '').toUpperCase().trim();
+        
+        if (issuerCode === 'INDUSTT') {
+          if (!summaryIndustt[feName]) {
+            summaryIndustt[feName] = 0;
+          }
+          summaryIndustt[feName] += feAmount;
+        } else if (issuerCode === 'IDFCTT') {
+          if (!summaryIdfctt[feName]) {
+            summaryIdfctt[feName] = 0;
+          }
+          summaryIdfctt[feName] += feAmount;
+        }
+      }
+      
+      // Store INDUSTT and IDFCTT data for reconciliation
+      industtSummaryData = { ...summaryIndustt };
+      idfcttSummaryData = { ...summaryIdfctt };
+      
+      // Create summary table for INDUSTT with difference column (only 3 columns)
+      let htmlIndustt = `<table class="data-table" style="color: ${config.text_color}; font-size: 0.875rem;">`;
+      htmlIndustt += `<thead><tr>`;
+      htmlIndustt += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">FE Name</th>`;
+      htmlIndustt += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">INDUSTT Amount</th>`;
+      htmlIndustt += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">Difference</th>`;
+      htmlIndustt += `</tr></thead><tbody>`;
+      
+      // Get all unique currencies from both sources and sort alphabetically
+      const allIndusttCurrencies = [...new Set([...Object.keys(summaryIndustt), ...Object.keys(indusSummaryData)])].sort();
+      
+      let rowIndex = 0;
+      for (const name of allIndusttCurrencies) {
+        const industtAmount = summaryIndustt[name] || 0;
+        const indusAmount = indusSummaryData[name] || 0;
+        const difference = industtAmount - indusAmount;
+        
+        const rowBg = rowIndex % 2 === 0 ? config.surface_color : adjustColor(config.surface_color, 10);
+        htmlIndustt += `<tr style="background-color: ${rowBg}">`;
+        htmlIndustt += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${escapeHtml(name)}</td>`;
+        htmlIndustt += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${industtAmount > 0 ? industtAmount.toLocaleString() : '-'}</td>`;
+        
+        // Highlight difference: red for negative, green for positive
+        const diffColor = difference < 0 ? '#ef4444' : difference > 0 ? '#10b981' : config.text_color;
+        htmlIndustt += `<td style="border-color: ${adjustColor(config.surface_color, 20)}; color: ${diffColor}; font-weight: ${difference !== 0 ? '600' : '400'};">${difference !== 0 ? difference.toLocaleString() : '-'}</td>`;
+        htmlIndustt += `</tr>`;
+        rowIndex++;
+      }
+      
+      if (allIndusttCurrencies.length === 0) {
+        htmlIndustt += `<tr><td colspan="3" style="text-align: center; padding: 10px; opacity: 0.7;">No INDUSTT data found</td></tr>`;
+      }
+      
+      htmlIndustt += '</tbody></table>';
+      
+      // Create summary table for IDFCTT with difference column (showing negative differences)
+      let htmlIdfctt = `<table class="data-table" style="color: ${config.text_color}; font-size: 0.875rem;">`;
+      htmlIdfctt += `<thead><tr>`;
+      htmlIdfctt += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">FE Name</th>`;
+      htmlIdfctt += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">IDFCTT Amount</th>`;
+      htmlIdfctt += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">Difference</th>`;
+      htmlIdfctt += `</tr></thead><tbody>`;
+      
+      // Get all unique currencies from both sources and sort alphabetically
+      const allIdfcttCurrencies = [...new Set([...Object.keys(summaryIdfctt), ...Object.keys(idfcSummaryData)])].sort();
+      
+      rowIndex = 0;
+      for (const name of allIdfcttCurrencies) {
+        const idfcttAmount = summaryIdfctt[name] || 0;
+        const idfcAmount = idfcSummaryData[name] || 0;
+        const difference = idfcttAmount - idfcAmount;
+        
+        const rowBg = rowIndex % 2 === 0 ? config.surface_color : adjustColor(config.surface_color, 10);
+        htmlIdfctt += `<tr style="background-color: ${rowBg}">`;
+        htmlIdfctt += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${escapeHtml(name)}</td>`;
+        htmlIdfctt += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${idfcttAmount > 0 ? idfcttAmount.toLocaleString() : '-'}</td>`;
+        
+        // Highlight difference: red for negative, green for positive
+        const diffColor = difference < 0 ? '#ef4444' : difference > 0 ? '#10b981' : config.text_color;
+        htmlIdfctt += `<td style="border-color: ${adjustColor(config.surface_color, 20)}; color: ${diffColor}; font-weight: ${difference !== 0 ? '600' : '400'};">${difference !== 0 ? difference.toLocaleString() : '-'}</td>`;
+        htmlIdfctt += `</tr>`;
+        rowIndex++;
+      }
+      
+      if (allIdfcttCurrencies.length === 0) {
+        htmlIdfctt += `<tr><td colspan="3" style="text-align: center; padding: 10px; opacity: 0.7;">No IDFCTT data found</td></tr>`;
+      }
+      
+      htmlIdfctt += '</tbody></table>';
+      
+      return { industt: htmlIndustt, idfctt: htmlIdfctt };
+    }
+
+    // Create summary table by CCY Pair and Amount 1 (for IDFC - removes INR from pairs, shows only 3-digit currencies)
+    function createIDFCSummaryTable(data) {
+      if (!data || data.length <= 1) return '';
+      
+      // Find CCY PAIR and AMOUNT 1 columns
+      const headers = data[0].map(h => h.toUpperCase().trim());
+      const ccyPairIndex = headers.findIndex(h => h.includes('CCY') && h.includes('PAIR'));
+      const amount1Index = headers.findIndex(h => h.includes('AMOUNT') && h.includes('1'));
+      
+      if (ccyPairIndex === -1 || amount1Index === -1) {
+        return '<p class="text-xs opacity-70 p-2">CCY PAIR or AMOUNT 1 column not found</p>';
+      }
+      
+      // Calculate sum by CCY Pair (remove INR from pairs, only show 3-digit currencies)
+      const summary = {};
+      for (let i = 1; i < data.length; i++) {
+        let ccyPair = (data[i][ccyPairIndex] || '').trim().toUpperCase();
+        const amount1 = parseFloat(data[i][amount1Index]) || 0;
+        
+        // Remove "INR" from the pair (e.g., USDINR becomes USD)
+        ccyPair = ccyPair.replace('INR', '');
+        
+        // Only include if the resulting currency is exactly 3 characters
+        if (ccyPair.length === 3) {
+          if (!summary[ccyPair]) {
+            summary[ccyPair] = 0;
+          }
+          summary[ccyPair] += amount1;
+        }
+      }
+      
+      // Store for reconciliation
+      idfcSummaryData = { ...summary };
+      
+      // Create summary table with difference column
+      let html = `<table class="data-table" style="color: ${config.text_color}; font-size: 0.875rem;">`;
+      html += `<thead><tr>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">CCY Pair</th>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">IDFC Amount</th>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">Difference</th>`;
+      html += `</tr></thead><tbody>`;
+      
+      // Get all unique currencies from both sources and sort
+      const allCurrencies = [...new Set([...Object.keys(summary), ...Object.keys(idfcttSummaryData)])].sort();
+      
+      let rowIndex = 0;
+      for (const ccy of allCurrencies) {
+        const idfcAmount = summary[ccy] || 0;
+        const idfcttAmount = idfcttSummaryData[ccy] || 0;
+        const difference = idfcAmount - idfcttAmount;
+        
+        const rowBg = rowIndex % 2 === 0 ? config.surface_color : adjustColor(config.surface_color, 10);
+        html += `<tr style="background-color: ${rowBg}">`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${escapeHtml(ccy)}</td>`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${idfcAmount > 0 ? idfcAmount.toLocaleString() : '-'}</td>`;
+        
+        // Highlight difference: red for negative, green for positive
+        const diffColor = difference < 0 ? '#ef4444' : difference > 0 ? '#10b981' : config.text_color;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}; color: ${diffColor}; font-weight: ${difference !== 0 ? '600' : '400'};">${difference !== 0 ? difference.toLocaleString() : '-'}</td>`;
+        html += `</tr>`;
+        rowIndex++;
+      }
+      
+      if (allCurrencies.length === 0) {
+        html += `<tr><td colspan="3" style="text-align: center; padding: 10px; opacity: 0.7;">No valid CCY pairs found</td></tr>`;
+      }
+      
+      html += '</tbody></table>';
+      return html;
+    }
+
+    // Store Indus and IDFC summary data globally for reconciliation
+    let indusSummaryData = {};
+    let idfcSummaryData = {};
+
+    // Helper function to regenerate Eon INDUSTT table with current data
+    function regenerateEonIndusttTable() {
+      const eonIndusttTable = document.getElementById('eon-summary-table-industt');
+      if (!eonIndusttTable || Object.keys(industtSummaryData).length === 0) return;
+      
+      let html = `<table class="data-table" style="color: ${config.text_color}; font-size: 0.875rem;">`;
+      html += `<thead><tr>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">FE Name</th>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">INDUSTT Amount</th>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">Difference</th>`;
+      html += `</tr></thead><tbody>`;
+      
+      const allIndusttCurrencies = [...new Set([...Object.keys(industtSummaryData), ...Object.keys(indusSummaryData)])].sort();
+      
+      let rowIndex = 0;
+      for (const name of allIndusttCurrencies) {
+        const industtAmount = industtSummaryData[name] || 0;
+        const indusAmount = indusSummaryData[name] || 0;
+        const difference = industtAmount - indusAmount;
+        
+        const rowBg = rowIndex % 2 === 0 ? config.surface_color : adjustColor(config.surface_color, 10);
+        html += `<tr style="background-color: ${rowBg}">`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${escapeHtml(name)}</td>`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${industtAmount > 0 ? industtAmount.toLocaleString() : '-'}</td>`;
+        
+        const diffColor = difference < 0 ? '#ef4444' : difference > 0 ? '#10b981' : config.text_color;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}; color: ${diffColor}; font-weight: ${difference !== 0 ? '600' : '400'};">${difference !== 0 ? difference.toLocaleString() : '-'}</td>`;
+        html += `</tr>`;
+        rowIndex++;
+      }
+      
+      html += '</tbody></table>';
+      eonIndusttTable.innerHTML = html;
+    }
+
+    // Helper function to regenerate Eon IDFCTT table with current data
+    function regenerateEonIdfcttTable() {
+      const eonIdfcttTable = document.getElementById('eon-summary-table-idfctt');
+      if (!eonIdfcttTable || Object.keys(idfcttSummaryData).length === 0) return;
+      
+      let html = `<table class="data-table" style="color: ${config.text_color}; font-size: 0.875rem;">`;
+      html += `<thead><tr>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">FE Name</th>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">IDFCTT Amount</th>`;
+      html += `<th style="background-color: ${config.primary_action_color}; color: white; font-weight: 600;">Difference</th>`;
+      html += `</tr></thead><tbody>`;
+      
+      const allIdfcttCurrencies = [...new Set([...Object.keys(idfcttSummaryData), ...Object.keys(idfcSummaryData)])].sort();
+      
+      let rowIndex = 0;
+      for (const name of allIdfcttCurrencies) {
+        const idfcttAmount = idfcttSummaryData[name] || 0;
+        const idfcAmount = idfcSummaryData[name] || 0;
+        const difference = idfcttAmount - idfcAmount;
+        
+        const rowBg = rowIndex % 2 === 0 ? config.surface_color : adjustColor(config.surface_color, 10);
+        html += `<tr style="background-color: ${rowBg}">`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${escapeHtml(name)}</td>`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${idfcttAmount > 0 ? idfcttAmount.toLocaleString() : '-'}</td>`;
+        
+        const diffColor = difference < 0 ? '#ef4444' : difference > 0 ? '#10b981' : config.text_color;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}; color: ${diffColor}; font-weight: ${difference !== 0 ? '600' : '400'};">${difference !== 0 ? difference.toLocaleString() : '-'}</td>`;
+        html += `</tr>`;
+        rowIndex++;
+      }
+      
+      html += '</tbody></table>';
+      eonIdfcttTable.innerHTML = html;
+    }
+
+    // Helper function to regenerate Indus summary table with current data
+    function regenerateIndusSummaryTable() {
+      const indusSummaryTable = document.getElementById('indus-summary-table');
+      const indusSummaryContainer = document.getElementById('indus-summary-container');
+      if (!indusSummaryTable || !indusSummaryContainer || Object.keys(indusSummaryData).length === 0) return;
+      
+      // Create summary table with 3 columns: Dealt CCY, Indus Amount, Difference
+      let html = `<table class="data-table" style="color: ${config.text_color}; font-size: 0.875rem;">`;
+      html += `<thead><tr>`;
+      html += `<th style="background-color: ${config.secondary_action_color}; color: white; font-weight: 600;">Dealt CCY</th>`;
+      html += `<th style="background-color: ${config.secondary_action_color}; color: white; font-weight: 600;">Indus Amount</th>`;
+      html += `<th style="background-color: ${config.secondary_action_color}; color: white; font-weight: 600;">Difference</th>`;
+      html += `</tr></thead><tbody>`;
+      
+      // Get all unique currencies from both sources and sort
+      const allCurrencies = [...new Set([...Object.keys(indusSummaryData), ...Object.keys(industtSummaryData)])].sort();
+      
+      let rowIndex = 0;
+      for (const ccy of allCurrencies) {
+        const indusAmount = indusSummaryData[ccy] || 0;
+        const industtAmount = industtSummaryData[ccy] || 0;
+        const difference = indusAmount - industtAmount;
+        
+        const rowBg = rowIndex % 2 === 0 ? config.surface_color : adjustColor(config.surface_color, 10);
+        html += `<tr style="background-color: ${rowBg}">`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${escapeHtml(ccy)}</td>`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${indusAmount > 0 ? indusAmount.toLocaleString() : '-'}</td>`;
+        
+        // Highlight difference: red for negative, green for positive
+        const diffColor = difference < 0 ? '#ef4444' : difference > 0 ? '#10b981' : config.text_color;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}; color: ${diffColor}; font-weight: ${difference !== 0 ? '600' : '400'};">${difference !== 0 ? difference.toLocaleString() : '-'}</td>`;
+        html += `</tr>`;
+        rowIndex++;
+      }
+      
+      html += '</tbody></table>';
+      indusSummaryTable.innerHTML = html;
+      indusSummaryContainer.classList.remove('hidden');
+    }
+
+    // Create summary table by Dealt CCY and Dealt Amount (for Indus)
+    function createBankSummaryTable(data) {
+      if (!data || data.length <= 1) return '';
+      
+      // Find DEALT CCY and DEALT AMOUNT columns
+      const headers = data[0].map(h => h.toUpperCase().trim());
+      const dealtCcyIndex = headers.findIndex(h => h.includes('DEALT') && h.includes('CCY'));
+      const dealtAmountIndex = headers.findIndex(h => h.includes('DEALT') && h.includes('AMOUNT'));
+      
+      if (dealtCcyIndex === -1 || dealtAmountIndex === -1) {
+        return '<p class="text-xs opacity-70 p-2">DEALT CCY or DEALT AMOUNT column not found</p>';
+      }
+      
+      // Calculate sum by Dealt CCY
+      const summary = {};
+      for (let i = 1; i < data.length; i++) {
+        const dealtCcy = data[i][dealtCcyIndex] || 'Unknown';
+        const dealtAmount = parseFloat(data[i][dealtAmountIndex]) || 0;
+        
+        if (!summary[dealtCcy]) {
+          summary[dealtCcy] = 0;
+        }
+        summary[dealtCcy] += dealtAmount;
+      }
+      
+      // Store for reconciliation
+      indusSummaryData = { ...summary };
+      
+      // Create summary table with 3 columns: Dealt CCY, Indus Amount, Difference
+      let html = `<table class="data-table" style="color: ${config.text_color}; font-size: 0.875rem;">`;
+      html += `<thead><tr>`;
+      html += `<th style="background-color: ${config.secondary_action_color}; color: white; font-weight: 600;">Dealt CCY</th>`;
+      html += `<th style="background-color: ${config.secondary_action_color}; color: white; font-weight: 600;">Indus Amount</th>`;
+      html += `<th style="background-color: ${config.secondary_action_color}; color: white; font-weight: 600;">Difference</th>`;
+      html += `</tr></thead><tbody>`;
+      
+      // Get all unique currencies from both sources and sort
+      const allCurrencies = [...new Set([...Object.keys(summary), ...Object.keys(industtSummaryData)])].sort();
+      
+      let rowIndex = 0;
+      for (const ccy of allCurrencies) {
+        const indusAmount = summary[ccy] || 0;
+        const industtAmount = industtSummaryData[ccy] || 0;
+        const difference = indusAmount - industtAmount;
+        
+        const rowBg = rowIndex % 2 === 0 ? config.surface_color : adjustColor(config.surface_color, 10);
+        html += `<tr style="background-color: ${rowBg}">`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${escapeHtml(ccy)}</td>`;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}">${indusAmount > 0 ? indusAmount.toLocaleString() : '-'}</td>`;
+        
+        // Highlight difference: red for negative, green for positive
+        const diffColor = difference < 0 ? '#ef4444' : difference > 0 ? '#10b981' : config.text_color;
+        html += `<td style="border-color: ${adjustColor(config.surface_color, 20)}; color: ${diffColor}; font-weight: ${difference !== 0 ? '600' : '400'};">${difference !== 0 ? difference.toLocaleString() : '-'}</td>`;
+        html += `</tr>`;
+        rowIndex++;
+      }
+      
+      if (allCurrencies.length === 0) {
+        html += `<tr><td colspan="3" style="text-align: center; padding: 10px; opacity: 0.7;">No data found</td></tr>`;
+      }
+      
+      html += '</tbody></table>';
+      return html;
+    }
+
+
+
+    // Handle paste events
+    function setupPasteArea(type) {
+      const pasteArea = document.getElementById(`${type}-paste-area`);
+      const placeholder = document.getElementById(`${type}-placeholder`);
+      const tableContainer = document.getElementById(`${type}-table-container`);
+      const rowCount = document.getElementById(`${type}-row-count`);
+      const clearBtn = document.getElementById(`${type}-clear-btn`);
+      const summaryContainer = document.getElementById(`${type}-summary-container`);
+      const summaryTable = document.getElementById(`${type}-summary-table`);
+
+      pasteArea.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData('text/plain');
+        const data = parseExcelData(text);
+        
+        if (data && data.length > 0) {
+          placeholder.classList.add('hidden');
+          pasteArea.style.minHeight = '60px';
+          pasteArea.innerHTML = `<p class="text-sm opacity-70">       Data loaded - Click to paste new data</p>`;
+          rowCount.textContent = `${data.length - 1} rows`;
+          clearBtn.classList.remove('hidden');
+          
+          // Create summary table for Eon
+          if (type === 'eon') {
+            const summaryHtml = createSummaryTable(data);
+            const industtTable = document.getElementById('eon-summary-table-industt');
+            const idfcttTable = document.getElementById('eon-summary-table-idfctt');
+            const summaryContainer = document.getElementById('eon-summary-container');
+            
+            if (industtTable && idfcttTable && summaryContainer) {
+              industtTable.innerHTML = summaryHtml.industt;
+              idfcttTable.innerHTML = summaryHtml.idfctt;
+              summaryContainer.classList.remove('hidden');
+            }
+          }
+          
+          // Create summary table for IDFC
+          if (type === 'idfc') {
+            const summaryHtml = createIDFCSummaryTable(data);
+            const summaryTable = document.getElementById('idfc-summary-table');
+            const summaryContainer = document.getElementById('idfc-summary-container');
+            
+            if (summaryTable && summaryContainer) {
+              summaryTable.innerHTML = summaryHtml;
+              summaryContainer.classList.remove('hidden');
+            }
+            
+            // Regenerate Eon IDFCTT table if Eon data exists
+            if (Object.keys(idfcttSummaryData).length > 0) {
+              regenerateEonIdfcttTable();
+            }
+          }
+          
+          // Create summary table for Indus
+          if (type === 'indus') {
+            const summaryHtml = createBankSummaryTable(data);
+            const summaryTable = document.getElementById('indus-summary-table');
+            const summaryContainer = document.getElementById('indus-summary-container');
+            
+            if (summaryTable && summaryContainer) {
+              summaryTable.innerHTML = summaryHtml;
+              summaryContainer.classList.remove('hidden');
+            }
+            
+            // Regenerate Eon INDUSTT table if Eon data exists
+            if (Object.keys(industtSummaryData).length > 0) {
+              regenerateEonIndusttTable();
+            }
+          }
+        }
+      });
+
+      pasteArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        pasteArea.classList.add('drag-over');
+      });
+
+      pasteArea.addEventListener('dragleave', () => {
+        pasteArea.classList.remove('drag-over');
+      });
+
+      pasteArea.addEventListener('focus', () => {
+        pasteArea.style.borderColor = config.primary_action_color;
+        pasteArea.style.boxShadow = `0 0 0 3px ${config.primary_action_color}33`;
+      });
+
+      pasteArea.addEventListener('blur', () => {
+        pasteArea.style.borderColor = config.secondary_action_color;
+        pasteArea.style.boxShadow = 'none';
+      });
+
+      clearBtn.addEventListener('click', () => {
+        placeholder.classList.remove('hidden');
+        pasteArea.style.minHeight = '50px';
+        pasteArea.innerHTML = '';
+        pasteArea.appendChild(placeholder);
+        rowCount.textContent = 'No data';
+        clearBtn.classList.add('hidden');
+        
+        // Clear summary table
+        if (summaryContainer) {
+          if (type === 'eon') {
+            document.getElementById('eon-summary-table-industt').innerHTML = '';
+            document.getElementById('eon-summary-table-idfctt').innerHTML = '';
+          } else if (summaryTable) {
+            summaryTable.innerHTML = '';
+          }
+          summaryContainer.classList.add('hidden');
+        }
+      });
+    }
+
+    // Apply configuration to UI
+    async function onConfigChange(cfg) {
+      config = { ...defaultConfig, ...cfg };
+      
+      const fontStack = `${config.font_family}, sans-serif`;
+      const baseSize = config.font_size;
+      
+      // Apply background
+      document.getElementById('app-container').style.background = `linear-gradient(135deg, ${config.background_color} 0%, ${adjustColor(config.background_color, 15)} 100%)`;
+      
+      // Apply text colors and fonts
+      const pageTitle = document.getElementById('page-title');
+      pageTitle.style.fontFamily = fontStack;
+      pageTitle.style.fontSize = `${baseSize * 1.5}px`;
+      
+      // Split title to make only "Pruthvi" blue
+      const titleText = config.page_title;
+      if (titleText.includes('Pruthvi')) {
+        const parts = titleText.split('Pruthvi');
+        pageTitle.innerHTML = `${escapeHtml(parts[0])}<span style="color: ${config.primary_action_color}">Pruthvi</span>${escapeHtml(parts[1] || '')}`;
+      } else {
+        pageTitle.textContent = titleText;
+      }
+      pageTitle.style.color = config.text_color;
+      
+      // Section titles
+      document.getElementById('section1-title').style.color = config.text_color;
+      document.getElementById('section1-title').style.fontFamily = fontStack;
+      document.getElementById('section1-title').style.fontSize = `${baseSize * 1.25}px`;
+      
+      document.getElementById('section2-title').style.color = config.text_color;
+      document.getElementById('section2-title').style.fontFamily = fontStack;
+      document.getElementById('section2-title').style.fontSize = `${baseSize * 1.25}px`;
+      
+      // Eon INDUSTT card styling
+      const eonIndusttCard = document.getElementById('eon-industt-card');
+      eonIndusttCard.style.backgroundColor = config.surface_color;
+      
+      document.getElementById('eon-industt-title').style.color = config.text_color;
+      document.getElementById('eon-industt-title').style.fontFamily = fontStack;
+      document.getElementById('eon-industt-title').style.fontSize = `${baseSize * 1.125}px`;
+      
+      document.getElementById('eon-industt-icon-bg').style.backgroundColor = config.primary_action_color + '33';
+      document.getElementById('eon-industt-icon').style.color = config.primary_action_color;
+      
+      // Eon IDFC card styling
+      const eonIdfcCard = document.getElementById('eon-idfc-card');
+      eonIdfcCard.style.backgroundColor = config.surface_color;
+      
+      document.getElementById('eon-idfc-title').style.color = config.text_color;
+      document.getElementById('eon-idfc-title').style.fontFamily = fontStack;
+      document.getElementById('eon-idfc-title').style.fontSize = `${baseSize * 1.125}px`;
+      
+      document.getElementById('eon-idfc-icon-bg').style.backgroundColor = config.primary_action_color + '33';
+      document.getElementById('eon-idfc-icon').style.color = config.primary_action_color;
+      
+      const eonIndusttPasteArea = document.getElementById('eon-industt-paste-area');
+      eonIndusttPasteArea.style.borderColor = config.secondary_action_color;
+      eonIndusttPasteArea.style.backgroundColor = config.background_color;
+      eonIndusttPasteArea.style.color = config.text_color;
+      
+      document.getElementById('eon-industt-row-count').style.color = config.text_color;
+      
+      const eonIndusttClearBtn = document.getElementById('eon-industt-clear-btn');
+      eonIndusttClearBtn.style.backgroundColor = config.secondary_action_color + '33';
+      eonIndusttClearBtn.style.color = config.text_color;
+      
+      const eonIdfcPasteArea = document.getElementById('eon-idfc-paste-area');
+      eonIdfcPasteArea.style.borderColor = config.secondary_action_color;
+      eonIdfcPasteArea.style.backgroundColor = config.background_color;
+      eonIdfcPasteArea.style.color = config.text_color;
+      
+      document.getElementById('eon-idfc-row-count').style.color = config.text_color;
+      
+      const eonIdfcClearBtn = document.getElementById('eon-idfc-clear-btn');
+      eonIdfcClearBtn.style.backgroundColor = config.secondary_action_color + '33';
+      eonIdfcClearBtn.style.color = config.text_color;
+      
+      // Indus card styling
+      const indusCard = document.getElementById('indus-card');
+      indusCard.style.backgroundColor = config.surface_color;
+      
+      document.getElementById('indus-title').style.color = config.text_color;
+      document.getElementById('indus-title').style.fontFamily = fontStack;
+      document.getElementById('indus-title').style.fontSize = `${baseSize * 1.125}px`;
+      document.getElementById('indus-title').textContent = config.indus_section_title;
+      
+      document.getElementById('indus-icon-bg').style.backgroundColor = config.secondary_action_color + '33';
+      document.getElementById('indus-icon').style.color = config.secondary_action_color;
+      
+      // Purpose card styling (INDUSTT)
+      const purposeCard = document.getElementById('purpose-card');
+      purposeCard.style.backgroundColor = config.surface_color;
+      
+      document.getElementById('purpose-title').style.color = config.text_color;
+      document.getElementById('purpose-title').style.fontFamily = fontStack;
+      document.getElementById('purpose-title').style.fontSize = `${baseSize * 1.125}px`;
+      
+      document.getElementById('purpose-icon-bg').style.backgroundColor = config.secondary_action_color + '33';
+      document.getElementById('purpose-icon').style.color = config.secondary_action_color;
+      
+      document.getElementById('purpose-row-count').style.color = config.text_color;
+      
+      const purposeSummaryTitle = document.getElementById('purpose-summary-title');
+      if (purposeSummaryTitle) {
+        purposeSummaryTitle.style.color = config.text_color;
+        purposeSummaryTitle.style.fontFamily = fontStack;
+        purposeSummaryTitle.style.fontSize = `${baseSize * 0.875}px`;
+      }
+      
+      // Purpose IDFC card styling (IDFCTT)
+      const purposeIdfcCard = document.getElementById('purpose-idfc-card');
+      if (purposeIdfcCard) {
+        purposeIdfcCard.style.backgroundColor = config.surface_color;
+        
+        document.getElementById('purpose-idfc-title').style.color = config.text_color;
+        document.getElementById('purpose-idfc-title').style.fontFamily = fontStack;
+        document.getElementById('purpose-idfc-title').style.fontSize = `${baseSize * 1.125}px`;
+        
+        document.getElementById('purpose-idfc-icon-bg').style.backgroundColor = config.primary_action_color + '33';
+        document.getElementById('purpose-idfc-icon').style.color = config.primary_action_color;
+        
+        document.getElementById('purpose-idfc-row-count').style.color = config.text_color;
+        
+        const purposeIdfcSummaryTitle = document.getElementById('purpose-idfc-summary-title');
+        if (purposeIdfcSummaryTitle) {
+          purposeIdfcSummaryTitle.style.color = config.text_color;
+          purposeIdfcSummaryTitle.style.fontFamily = fontStack;
+          purposeIdfcSummaryTitle.style.fontSize = `${baseSize * 0.875}px`;
+        }
+      }
+      
+      const indusPasteArea = document.getElementById('indus-paste-area');
+      indusPasteArea.style.borderColor = config.secondary_action_color;
+      indusPasteArea.style.backgroundColor = config.background_color;
+      indusPasteArea.style.color = config.text_color;
+      
+      document.getElementById('indus-row-count').style.color = config.text_color;
+      
+      const indusClearBtn = document.getElementById('indus-clear-btn');
+      indusClearBtn.style.backgroundColor = config.secondary_action_color + '33';
+      indusClearBtn.style.color = config.text_color;
+      
+      // IDFC card styling
+      const idfcCard = document.getElementById('idfc-card');
+      idfcCard.style.backgroundColor = config.surface_color;
+      
+      document.getElementById('idfc-title').style.color = config.text_color;
+      document.getElementById('idfc-title').style.fontFamily = fontStack;
+      document.getElementById('idfc-title').style.fontSize = `${baseSize * 1.125}px`;
+      document.getElementById('idfc-title').textContent = config.idfc_section_title;
+      
+      document.getElementById('idfc-icon-bg').style.backgroundColor = config.primary_action_color + '33';
+      document.getElementById('idfc-icon').style.color = config.primary_action_color;
+      
+      const idfcPasteArea = document.getElementById('idfc-paste-area');
+      idfcPasteArea.style.borderColor = config.secondary_action_color;
+      idfcPasteArea.style.backgroundColor = config.background_color;
+      idfcPasteArea.style.color = config.text_color;
+      
+      document.getElementById('idfc-row-count').style.color = config.text_color;
+      
+      const idfcClearBtn = document.getElementById('idfc-clear-btn');
+      idfcClearBtn.style.backgroundColor = config.secondary_action_color + '33';
+      idfcClearBtn.style.color = config.text_color;
+      
+      // Eon summary titles
+      const eonSummaryTitleIndustt = document.getElementById('eon-summary-title-industt');
+      if (eonSummaryTitleIndustt) {
+        eonSummaryTitleIndustt.style.color = config.text_color;
+        eonSummaryTitleIndustt.style.fontFamily = fontStack;
+        eonSummaryTitleIndustt.style.fontSize = `${baseSize * 0.875}px`;
+      }
+      
+      const eonSummaryTitleIdfctt = document.getElementById('eon-summary-title-idfctt');
+      if (eonSummaryTitleIdfctt) {
+        eonSummaryTitleIdfctt.style.color = config.text_color;
+        eonSummaryTitleIdfctt.style.fontFamily = fontStack;
+        eonSummaryTitleIdfctt.style.fontSize = `${baseSize * 0.875}px`;
+      }
+      
+      // IDFC summary title
+      const idfcSummaryTitle = document.getElementById('idfc-summary-title');
+      if (idfcSummaryTitle) {
+        idfcSummaryTitle.style.color = config.text_color;
+        idfcSummaryTitle.style.fontFamily = fontStack;
+        idfcSummaryTitle.style.fontSize = `${baseSize * 0.875}px`;
+      }
+      
+      // Indus summary title
+      const indusSummaryTitle = document.getElementById('indus-summary-title');
+      if (indusSummaryTitle) {
+        indusSummaryTitle.style.color = config.text_color;
+        indusSummaryTitle.style.fontFamily = fontStack;
+        indusSummaryTitle.style.fontSize = `${baseSize * 0.875}px`;
+      }
+      
+      // Instructions box
+      const instructionsBox = document.getElementById('instructions-box');
+      if (instructionsBox) {
+        instructionsBox.style.backgroundColor = config.surface_color;
+        instructionsBox.style.color = config.text_color;
+      }
+      
+      // Excel upload section
+      const excelUploadSection = document.getElementById('excel-upload-section');
+      if (excelUploadSection) {
+        excelUploadSection.style.backgroundColor = config.surface_color;
+      }
+      
+      const excelUploadTitle = document.getElementById('excel-upload-title');
+      if (excelUploadTitle) {
+        excelUploadTitle.style.color = config.text_color;
+        excelUploadTitle.style.fontFamily = fontStack;
+        excelUploadTitle.style.fontSize = `${baseSize * 1.125}px`;
+      }
+      
+      const excelUploadArea = document.getElementById('excel-upload-area');
+      if (excelUploadArea) {
+        excelUploadArea.style.borderColor = config.secondary_action_color;
+        excelUploadArea.style.backgroundColor = config.background_color;
+        excelUploadArea.style.color = config.text_color;
+      }
+    }
+
+    // Map to capabilities for Canva editor
+    function mapToCapabilities(cfg) {
+      return {
+        recolorables: [
+          {
+            get: () => cfg.background_color || defaultConfig.background_color,
+            set: (value) => { cfg.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+          },
+          {
+            get: () => cfg.surface_color || defaultConfig.surface_color,
+            set: (value) => { cfg.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+          },
+          {
+            get: () => cfg.text_color || defaultConfig.text_color,
+            set: (value) => { cfg.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+          },
+          {
+            get: () => cfg.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => { cfg.primary_action_color = value; window.elementSdk.setConfig({ primary_action_color: value }); }
+          },
+          {
+            get: () => cfg.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => { cfg.secondary_action_color = value; window.elementSdk.setConfig({ secondary_action_color: value }); }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => cfg.font_family || defaultConfig.font_family,
+          set: (value) => { cfg.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+        },
+        fontSizeable: {
+          get: () => cfg.font_size || defaultConfig.font_size,
+          set: (value) => { cfg.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+        }
+      };
+    }
+
+    // Map to edit panel values
+    function mapToEditPanelValues(cfg) {
+      return new Map([
+        ['page_title', cfg.page_title || defaultConfig.page_title],
+        ['eon_section_title', cfg.eon_section_title || defaultConfig.eon_section_title],
+        ['indus_section_title', cfg.indus_section_title || defaultConfig.indus_section_title],
+        ['idfc_section_title', cfg.idfc_section_title || defaultConfig.idfc_section_title]
+      ]);
+    }
+
+    // Setup Eon INDUSTT paste area
+    function setupEonIndusttPasteArea() {
+      const pasteArea = document.getElementById('eon-industt-paste-area');
+      const placeholder = document.getElementById('eon-industt-placeholder');
+      const rowCount = document.getElementById('eon-industt-row-count');
+      const clearBtn = document.getElementById('eon-industt-clear-btn');
+      const summaryContainer = document.getElementById('eon-industt-summary-container');
+      const summaryTable = document.getElementById('eon-summary-table-industt');
+
+      pasteArea.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData('text/plain');
+        const data = parseExcelData(text);
+        
+        if (data && data.length > 0) {
+          placeholder.classList.add('hidden');
+          pasteArea.style.minHeight = '60px';
+          pasteArea.innerHTML = `<p class="text-sm opacity-70">✅ Data loaded - Click to paste new data</p>`;
+          rowCount.textContent = `${data.length - 1} rows`;
+          clearBtn.classList.remove('hidden');
+          
+          const summaryHtml = createSummaryTable(data);
+          if (summaryTable && summaryContainer) {
+            summaryTable.innerHTML = summaryHtml.industt;
+            summaryContainer.classList.remove('hidden');
+          }
+          
+          // Regenerate Indus table if Indus data exists
+          if (Object.keys(indusSummaryData).length > 0) {
+            regenerateIndusSummaryTable();
+          }
+          
+          // Generate purpose count table
+          const purposeResult = createPurposeCountTable(data);
+          const purposeSummaryTable = document.getElementById('purpose-summary-table');
+          const purposeSummaryContainer = document.getElementById('purpose-summary-container');
+          const purposeRowCount = document.getElementById('purpose-row-count');
+          
+          if (purposeSummaryTable && purposeSummaryContainer && purposeRowCount) {
+            purposeSummaryTable.innerHTML = purposeResult.html;
+            purposeSummaryContainer.classList.remove('hidden');
+            purposeRowCount.textContent = `${purposeResult.totalCount} transactions`;
+          }
+        }
+      });
+
+      pasteArea.addEventListener('focus', () => {
+        pasteArea.style.borderColor = config.primary_action_color;
+        pasteArea.style.boxShadow = `0 0 0 3px ${config.primary_action_color}33`;
+      });
+
+      pasteArea.addEventListener('blur', () => {
+        pasteArea.style.borderColor = config.secondary_action_color;
+        pasteArea.style.boxShadow = 'none';
+      });
+
+      clearBtn.addEventListener('click', () => {
+        placeholder.classList.remove('hidden');
+        pasteArea.style.minHeight = '50px';
+        pasteArea.innerHTML = '';
+        pasteArea.appendChild(placeholder);
+        rowCount.textContent = 'No data';
+        clearBtn.classList.add('hidden');
+        
+        if (summaryTable && summaryContainer) {
+          summaryTable.innerHTML = '';
+          summaryContainer.classList.add('hidden');
+        }
+        
+        // Clear purpose table
+        const purposeSummaryTable = document.getElementById('purpose-summary-table');
+        const purposeSummaryContainer = document.getElementById('purpose-summary-container');
+        const purposeRowCount = document.getElementById('purpose-row-count');
+        if (purposeSummaryTable && purposeSummaryContainer && purposeRowCount) {
+          purposeSummaryTable.innerHTML = '';
+          purposeSummaryContainer.classList.add('hidden');
+          purposeRowCount.textContent = 'No data loaded';
+        }
+      });
+    }
+
+    // Setup Eon IDFC paste area
+    function setupEonIdfcPasteArea() {
+      const pasteArea = document.getElementById('eon-idfc-paste-area');
+      const placeholder = document.getElementById('eon-idfc-placeholder');
+      const rowCount = document.getElementById('eon-idfc-row-count');
+      const clearBtn = document.getElementById('eon-idfc-clear-btn');
+      const summaryContainer = document.getElementById('eon-idfc-summary-container');
+      const summaryTable = document.getElementById('eon-summary-table-idfctt');
+
+      pasteArea.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData('text/plain');
+        const data = parseExcelData(text);
+        
+        if (data && data.length > 0) {
+          placeholder.classList.add('hidden');
+          pasteArea.style.minHeight = '60px';
+          pasteArea.innerHTML = `<p class="text-sm opacity-70">✅ Data loaded - Click to paste new data</p>`;
+          rowCount.textContent = `${data.length - 1} rows`;
+          clearBtn.classList.remove('hidden');
+          
+          const summaryHtml = createSummaryTable(data);
+          if (summaryTable && summaryContainer) {
+            summaryTable.innerHTML = summaryHtml.idfctt;
+            summaryContainer.classList.remove('hidden');
+          }
+          
+          // Generate purpose count table for IDFCTT
+          const purposeIdfcResult = createPurposeCountTableIdfc(data);
+          const purposeIdfcSummaryTable = document.getElementById('purpose-idfc-summary-table');
+          const purposeIdfcSummaryContainer = document.getElementById('purpose-idfc-summary-container');
+          const purposeIdfcRowCount = document.getElementById('purpose-idfc-row-count');
+          
+          if (purposeIdfcSummaryTable && purposeIdfcSummaryContainer && purposeIdfcRowCount) {
+            purposeIdfcSummaryTable.innerHTML = purposeIdfcResult.html;
+            purposeIdfcSummaryContainer.classList.remove('hidden');
+            purposeIdfcRowCount.textContent = `${purposeIdfcResult.totalCount} transactions`;
+          }
+        }
+      });
+
+      pasteArea.addEventListener('focus', () => {
+        pasteArea.style.borderColor = config.primary_action_color;
+        pasteArea.style.boxShadow = `0 0 0 3px ${config.primary_action_color}33`;
+      });
+
+      pasteArea.addEventListener('blur', () => {
+        pasteArea.style.borderColor = config.secondary_action_color;
+        pasteArea.style.boxShadow = 'none';
+      });
+
+      clearBtn.addEventListener('click', () => {
+        placeholder.classList.remove('hidden');
+        pasteArea.style.minHeight = '50px';
+        pasteArea.innerHTML = '';
+        pasteArea.appendChild(placeholder);
+        rowCount.textContent = 'No data';
+        clearBtn.classList.add('hidden');
+        
+        if (summaryTable && summaryContainer) {
+          summaryTable.innerHTML = '';
+          summaryContainer.classList.add('hidden');
+        }
+        
+        // Clear purpose table for IDFCTT
+        const purposeIdfcSummaryTable = document.getElementById('purpose-idfc-summary-table');
+        const purposeIdfcSummaryContainer = document.getElementById('purpose-idfc-summary-container');
+        const purposeIdfcRowCount = document.getElementById('purpose-idfc-row-count');
+        if (purposeIdfcSummaryTable && purposeIdfcSummaryContainer && purposeIdfcRowCount) {
+          purposeIdfcSummaryTable.innerHTML = '';
+          purposeIdfcSummaryContainer.classList.add('hidden');
+          purposeIdfcRowCount.textContent = 'No data loaded';
+        }
+      });
+    }
+
+    // Initialize
+    function init() {
+      setupEonIndusttPasteArea();
+      setupEonIdfcPasteArea();
+      setupPasteArea('indus');
+      setupPasteArea('idfc');
+      setupExcelUpload();
+      
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities,
+          mapToEditPanelValues
+        });
+      } else {
+        onConfigChange(defaultConfig);
+      }
+    }
+
+    // Setup Excel file upload
+    function setupExcelUpload() {
+      const fileInput = document.getElementById('excel-file-input');
+      const uploadArea = document.getElementById('excel-upload-area');
+      const uploadStatus = document.getElementById('excel-upload-status');
+      
+      fileInput.addEventListener('change', handleExcelFile);
+      
+      // Drag and drop support
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = config.primary_action_color;
+        uploadArea.style.transform = 'scale(1.02)';
+      });
+      
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = config.secondary_action_color;
+        uploadArea.style.transform = 'scale(1)';
+      });
+      
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = config.secondary_action_color;
+        uploadArea.style.transform = 'scale(1)';
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          fileInput.files = files;
+          handleExcelFile({ target: { files: files } });
+        }
+      });
+    }
+    
+    // Handle Excel file upload
+    function handleExcelFile(e) {
+      const file = e.target.files[0];
+      const uploadStatus = document.getElementById('excel-upload-status');
+      
+      if (!file) return;
+      
+      uploadStatus.textContent = '⏳ Reading Excel file...';
+      uploadStatus.classList.remove('hidden');
+      uploadStatus.style.color = config.text_color;
+      
+      const reader = new FileReader();
+      
+      reader.onload = function(event) {
+        try {
+          const data = new Uint8Array(event.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          
+          // Find sheets by name
+          const eonSheetName = workbook.SheetNames.find(name => name.toUpperCase().includes('EON'));
+          const indusSheetName = workbook.SheetNames.find(name => name.toUpperCase().includes('INDUS'));
+          const idfcSheetName = workbook.SheetNames.find(name => name.toUpperCase().includes('IDFC'));
+          
+          if (!eonSheetName || !indusSheetName || !idfcSheetName) {
+            uploadStatus.textContent = '❌ Excel file must have "EON", "Indus Bank Deal", and "IDFC Bank Deal" sheets';
+            uploadStatus.style.color = '#ef4444';
+            return;
+          }
+          
+          // Read EON sheet for Eon Deal (both INDUSTT and IDFC)
+          const eonSheet = workbook.Sheets[eonSheetName];
+          const eonData = XLSX.utils.sheet_to_json(eonSheet, { header: 1, defval: '' });
+          
+          // Read Indus Deal sheet
+          const indusSheet = workbook.Sheets[indusSheetName];
+          const indusData = XLSX.utils.sheet_to_json(indusSheet, { header: 1, defval: '' });
+          
+          // Read IDFC Deal sheet
+          const idfcSheet = workbook.Sheets[idfcSheetName];
+          const idfcData = XLSX.utils.sheet_to_json(idfcSheet, { header: 1, defval: '' });
+          
+          // Process Eon Deal data (Sheet 1) for both INDUSTT and IDFC
+          if (eonData && eonData.length > 0) {
+            loadDataToEonIndustt(eonData);
+            loadDataToEonIdfc(eonData);
+          }
+          
+          // Process Indus Deal data (Sheet 2)
+          if (indusData && indusData.length > 0) {
+            loadDataToIndus(indusData);
+          }
+          
+          // Process IDFC Deal data (Sheet 3)
+          if (idfcData && idfcData.length > 0) {
+            loadDataToIdfc(idfcData);
+          }
+          
+          uploadStatus.textContent = `✅ Excel file loaded successfully! (${eonData.length - 1} Eon rows, ${indusData.length - 1} Indus rows, ${idfcData.length - 1} IDFC rows)`;
+          uploadStatus.style.color = '#10b981';
+          
+          // Reset file input
+          e.target.value = '';
+          
+        } catch (error) {
+          console.error('Error reading Excel file:', error);
+          uploadStatus.textContent = '❌ Error reading Excel file. Please check the format.';
+          uploadStatus.style.color = '#ef4444';
+        }
+      };
+      
+      reader.onerror = function() {
+        uploadStatus.textContent = '❌ Error reading file';
+        uploadStatus.style.color = '#ef4444';
+      };
+      
+      reader.readAsArrayBuffer(file);
+    }
+    
+    // Load data to Eon INDUSTT section
+    function loadDataToEonIndustt(data) {
+      const pasteArea = document.getElementById('eon-industt-paste-area');
+      const placeholder = document.getElementById('eon-industt-placeholder');
+      const rowCount = document.getElementById('eon-industt-row-count');
+      const clearBtn = document.getElementById('eon-industt-clear-btn');
+      const summaryContainer = document.getElementById('eon-industt-summary-container');
+      const summaryTable = document.getElementById('eon-summary-table-industt');
+      
+      placeholder.classList.add('hidden');
+      pasteArea.style.minHeight = '60px';
+      pasteArea.innerHTML = `<p class="text-sm opacity-70">✅ Data loaded from Excel</p>`;
+      rowCount.textContent = `${data.length - 1} rows`;
+      clearBtn.classList.remove('hidden');
+      
+      const summaryHtml = createSummaryTable(data);
+      if (summaryTable && summaryContainer) {
+        summaryTable.innerHTML = summaryHtml.industt;
+        summaryContainer.classList.remove('hidden');
+      }
+      
+      // Regenerate Indus table if Indus data exists
+      if (Object.keys(indusSummaryData).length > 0) {
+        regenerateIndusSummaryTable();
+      }
+      
+      // Generate purpose count table
+      const purposeResult = createPurposeCountTable(data);
+      const purposeSummaryTable = document.getElementById('purpose-summary-table');
+      const purposeSummaryContainer = document.getElementById('purpose-summary-container');
+      const purposeRowCount = document.getElementById('purpose-row-count');
+      
+      if (purposeSummaryTable && purposeSummaryContainer && purposeRowCount) {
+        purposeSummaryTable.innerHTML = purposeResult.html;
+        purposeSummaryContainer.classList.remove('hidden');
+        purposeRowCount.textContent = `${purposeResult.totalCount} transactions`;
+      }
+    }
+    
+    // Load data to Eon IDFC section
+    function loadDataToEonIdfc(data) {
+      const pasteArea = document.getElementById('eon-idfc-paste-area');
+      const placeholder = document.getElementById('eon-idfc-placeholder');
+      const rowCount = document.getElementById('eon-idfc-row-count');
+      const clearBtn = document.getElementById('eon-idfc-clear-btn');
+      const summaryContainer = document.getElementById('eon-idfc-summary-container');
+      const summaryTable = document.getElementById('eon-summary-table-idfctt');
+      
+      placeholder.classList.add('hidden');
+      pasteArea.style.minHeight = '60px';
+      pasteArea.innerHTML = `<p class="text-sm opacity-70">✅ Data loaded from Excel</p>`;
+      rowCount.textContent = `${data.length - 1} rows`;
+      clearBtn.classList.remove('hidden');
+      
+      const summaryHtml = createSummaryTable(data);
+      if (summaryTable && summaryContainer) {
+        summaryTable.innerHTML = summaryHtml.idfctt;
+        summaryContainer.classList.remove('hidden');
+      }
+      
+      // Generate purpose count table for IDFCTT
+      const purposeIdfcResult = createPurposeCountTableIdfc(data);
+      const purposeIdfcSummaryTable = document.getElementById('purpose-idfc-summary-table');
+      const purposeIdfcSummaryContainer = document.getElementById('purpose-idfc-summary-container');
+      const purposeIdfcRowCount = document.getElementById('purpose-idfc-row-count');
+      
+      if (purposeIdfcSummaryTable && purposeIdfcSummaryContainer && purposeIdfcRowCount) {
+        purposeIdfcSummaryTable.innerHTML = purposeIdfcResult.html;
+        purposeIdfcSummaryContainer.classList.remove('hidden');
+        purposeIdfcRowCount.textContent = `${purposeIdfcResult.totalCount} transactions`;
+      }
+    }
+    
+    // Load data to Indus section
+    function loadDataToIndus(data) {
+      const pasteArea = document.getElementById('indus-paste-area');
+      const placeholder = document.getElementById('indus-placeholder');
+      const rowCount = document.getElementById('indus-row-count');
+      const clearBtn = document.getElementById('indus-clear-btn');
+      const summaryTable = document.getElementById('indus-summary-table');
+      const summaryContainer = document.getElementById('indus-summary-container');
+      
+      placeholder.classList.add('hidden');
+      pasteArea.style.minHeight = '60px';
+      pasteArea.innerHTML = `<p class="text-sm opacity-70">✅ Data loaded from Excel</p>`;
+      rowCount.textContent = `${data.length - 1} rows`;
+      clearBtn.classList.remove('hidden');
+      
+      const summaryHtml = createBankSummaryTable(data);
+      if (summaryTable && summaryContainer) {
+        summaryTable.innerHTML = summaryHtml;
+        summaryContainer.classList.remove('hidden');
+      }
+      
+      // Regenerate Eon INDUSTT table if Eon data exists
+      if (Object.keys(industtSummaryData).length > 0) {
+        regenerateEonIndusttTable();
+      }
+    }
+    
+    // Load data to IDFC section
+    function loadDataToIdfc(data) {
+      const pasteArea = document.getElementById('idfc-paste-area');
+      const placeholder = document.getElementById('idfc-placeholder');
+      const rowCount = document.getElementById('idfc-row-count');
+      const clearBtn = document.getElementById('idfc-clear-btn');
+      const summaryTable = document.getElementById('idfc-summary-table');
+      const summaryContainer = document.getElementById('idfc-summary-container');
+      
+      placeholder.classList.add('hidden');
+      pasteArea.style.minHeight = '60px';
+      pasteArea.innerHTML = `<p class="text-sm opacity-70">✅ Data loaded from Excel</p>`;
+      rowCount.textContent = `${data.length - 1} rows`;
+      clearBtn.classList.remove('hidden');
+      
+      const summaryHtml = createIDFCSummaryTable(data);
+      if (summaryTable && summaryContainer) {
+        summaryTable.innerHTML = summaryHtml;
+        summaryContainer.classList.remove('hidden');
+      }
+      
+      // Regenerate Eon IDFCTT table if Eon data exists
+      if (Object.keys(idfcttSummaryData).length > 0) {
+        regenerateEonIdfcttTable();
+      }
+    }
+
+    init();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c7fed7fd6687f74',t:'MTc3MDEwMDczMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
